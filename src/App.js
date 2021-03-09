@@ -3,8 +3,12 @@ import { useEffect, useState } from 'react';
 import { list } from './request';
 import info from './info.js';
 import { useSelector, useDispatch } from 'react-redux';
+import { getList } from './module/list';
 
 function App() {
+  const { list, page } = useSelector(({ list }) => ({ list: list.list, page: list.page }));
+  const dispatch = useDispatch();
+  const [filterData, setFilterData] = useState([]);
   const [filterTypes, setFilterTypes] = useState([
     {
       key: 'died',
@@ -68,8 +72,23 @@ function App() {
 
   const handleBodyScroll = () => {
     if (window.scrollY + window.innerHeight >= document.body.offsetHeight) {
+      dispatch(getList(page + 1));
     }
   };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleBodyScroll);
+    return () => window.removeEventListener('scroll', handleBodyScroll);
+  }, [handleBodyScroll]);
+
+  useEffect(() => {
+    dispatch(getList(getQueryString()));
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!list.length) return;
+    setFilterData(list);
+  }, [list]);
 
   return (
     <div className='App'>
@@ -92,9 +111,9 @@ function App() {
           초기화
         </button>
       </div>
-      {/* {filteredList && filteredList.length > 0 && (
+      {filterData && filterData.length > 0 && (
         <ul className='list'>
-          {filteredList.map((item, idx) => (
+          {filterData.map((item, idx) => (
             <li className='list__item' key={idx}>
               <div>
                 <p>title: {item.titles.toString()}</p>
@@ -107,7 +126,7 @@ function App() {
               </div>
             </li>
           ))}
-        </ul> */}
+        </ul>
       )}
     </div>
   );
