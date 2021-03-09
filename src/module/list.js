@@ -9,6 +9,8 @@ const APPEND_LIST = 'list/APPEND_LIST';
 const APPEND_LIST_SUCCESS = 'list/APPEND_LIST_SUCCESS';
 const APPEND_LIST_FAILURE = 'list/APPEND_LIST_FAILURE';
 
+const DELETED_ITEM = 'list/DELETED_ITEM';
+
 export const getList = (pageNum) => async (dispatch) => {
   dispatch({ type: GET_LIST });
 
@@ -20,16 +22,24 @@ export const getList = (pageNum) => async (dispatch) => {
   }
 };
 
+export const deletedItem = createAction(DELETED_ITEM, (item) => item);
+
 const initialState = {
   list: [],
   page: 1,
+  deletedItems: [],
 };
 
 export default handleActions(
   {
     [GET_LIST_SUCCESS]: (state, { payload: { list, page } }) => ({
+      ...state,
       list: state.list.concat(list),
       page,
+    }),
+    [DELETED_ITEM]: (state, { payload }) => ({
+      ...state,
+      deletedItems: state.deletedItems.concat(payload),
     }),
   },
   initialState

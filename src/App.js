@@ -3,10 +3,14 @@ import { useEffect, useState } from 'react';
 import { list } from './request';
 import info from './info.js';
 import { useSelector, useDispatch } from 'react-redux';
-import { getList } from './module/list';
+import { getList, deletedItem } from './module/list';
 
 function App() {
-  const { list, page } = useSelector(({ list }) => ({ list: list.list, page: list.page }));
+  const { list, page, deletedItems } = useSelector(({ list }) => ({
+    list: list.list,
+    page: list.page,
+    deletedItems: list.deletedItems,
+  }));
   const dispatch = useDispatch();
   const [filterData, setFilterData] = useState([]);
   const [filterTypes, setFilterTypes] = useState([
@@ -45,12 +49,15 @@ function App() {
         newList = newList.filter((item) => obj.fn(item));
       }
     }
+
+    if (deletedItems.length) {
+      newList = newList.filter((item, idx) => item.url !== deletedItems[idx]);
+    }
     setFilterData(newList);
   };
 
-  const resetData = () => {
-    setFilterTypes(filterTypes.map((item) => (item.checked ? { ...item, checked: !item.checked } : item)));
-  };
+  // 초기화 버튼
+  const resetData = () => filterList();
 
   // url param
   const getQueryString = () => {
@@ -73,6 +80,11 @@ function App() {
     if (window.scrollY + window.innerHeight >= document.body.offsetHeight) {
       dispatch(getList(page + 1));
     }
+  };
+
+  const deleteItem = (url) => {
+    dispatch(deletedItem(url));
+    setFilterData(filterData.filter((fItem) => fItem.url !== url));
   };
 
   useEffect(() => {
@@ -127,6 +139,9 @@ function App() {
                 <p>books: {item.books.length}</p>
                 <p>tvSeries: {item.tvSeries.length}</p>
               </div>
+              <button type='button' onClick={() => deleteItem(item.url)}>
+                삭제
+              </button>
             </li>
           ))}
         </ul>
