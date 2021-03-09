@@ -1,7 +1,5 @@
 import './App.css';
 import { useEffect, useState } from 'react';
-import { list } from './request';
-import info from './info.js';
 import { useSelector, useDispatch } from 'react-redux';
 import { getList, deletedItem } from './module/list';
 
@@ -130,16 +128,14 @@ function App() {
         <ul className='list'>
           {filterData.map((item, idx) => (
             <li className='list__item' key={idx}>
-              <div>
+              <div className='list__content'>
                 <p>title: {item.titles.toString()}</p>
                 <p>name: {item.name}</p>
-                <p>died: {item.died}</p>
-                <p>gender: {item.gender}</p>
                 <p>aliases: {item.aliases.toString()}</p>
                 <p>books: {item.books.length}</p>
                 <p>tvSeries: {item.tvSeries.length}</p>
               </div>
-              <button type='button' onClick={() => deleteItem(item.url)}>
+              <button className='list__btn' type='button' onClick={() => deleteItem(item.url)}>
                 삭제
               </button>
             </li>
