@@ -11,7 +11,7 @@ const APPEND_LIST_FAILURE = 'list/APPEND_LIST_FAILURE';
 
 export const getList = (pageNum) => async (dispatch) => {
   dispatch({ type: GET_LIST });
-  console.log(pageNum);
+
   try {
     const response = await list.fetch(pageNum);
     dispatch({ type: GET_LIST_SUCCESS, payload: { list: response, page: pageNum } });

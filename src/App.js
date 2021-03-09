@@ -30,24 +30,23 @@ function App() {
     },
   ]);
 
+  // 필터 함수
   const handleFilterItem = (e) => {
     const { value, checked } = e.target;
     // console.log(value, checked);
-    setFilterTypes(filterTypes.map((item) => (item.key === value ? { ...item, checked } : item)));
-    // filterData();
+    setFilterTypes((prev) => prev.map((item) => (item.key === value ? { ...item, checked } : item)));
   };
 
-  // const filterData = () => {
-  //   console.log('filterData');
-  //   // let newList = [...pureDatas];
+  const filterList = () => {
+    let newList = [...list];
 
-  //   for (const obj of filterTypes) {
-  //     if (obj.checked) {
-  //       console.log('checked');
-  //       newList = newList.filter((item) => obj.fn(item));
-  //     }
-  //   }
-  // };
+    for (const obj of filterTypes) {
+      if (obj.checked) {
+        newList = newList.filter((item) => obj.fn(item));
+      }
+    }
+    setFilterData(newList);
+  };
 
   const resetData = () => {
     setFilterTypes(filterTypes.map((item) => (item.checked ? { ...item, checked: !item.checked } : item)));
@@ -89,6 +88,10 @@ function App() {
     if (!list.length) return;
     setFilterData(list);
   }, [list]);
+
+  useEffect(() => {
+    filterList();
+  }, [filterTypes, page]);
 
   return (
     <div className='App'>
