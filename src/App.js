@@ -105,7 +105,7 @@ function App() {
 
   return (
     <div className='App'>
-      {/* <header>무신사 과제</header> */}
+      <header>무신사 과제</header>
       <div className='filter'>
         {filterTypes.map((item, idx) => (
           <label className='toggle' key={idx}>
